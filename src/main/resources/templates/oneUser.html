@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<head>
+    <title>Spring Security Example</title>
+</head>
+<body>
+<h1>User, welcome spring boot security page!</h1>
+
+<p th:text="'Id: '       + ${user.getId()}">VALUE</p>
+<p th:text="'Username: ' + ${user.getUsername()}">VALUE</p>
+<p th:text="'Password: ' + ${user.getPassword()}">VALUE</p>
+<p th:text="'Email: '    + ${user.getEmail()}">VALUE</p>
+
+<br/>
+
+<form th:action="@{/logout}" th:method="POST">
+    <input type="submit" value="logout"/>
+</form>
+
+</body>
+</html>
