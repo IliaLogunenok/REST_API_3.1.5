@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -40,6 +41,18 @@ public class User implements UserDetails {
         this.password = password;
         this.email = email;
         this.roles = roles;
+    }
+
+    public String getRolesString() {
+        StringBuilder sb = new StringBuilder();
+        for (Role role : roles) {
+            if (role.getName().contains("ROLE_ADMIN")) {
+                sb.append("ADMIN ");
+            } else if (role.getName().contains("ROLE_USER")) {
+                sb.append("USER ");
+            }
+        }
+        return sb.toString();
     }
 
     @Override

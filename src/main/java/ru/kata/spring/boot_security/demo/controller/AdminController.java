@@ -1,17 +1,14 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.security.Principal;
 
 @Controller
 @RequestMapping("/admin")
@@ -20,59 +17,55 @@ public class AdminController {
 
     private final RoleService roleService;
 
-    private final BCryptPasswordEncoder passwordEncoder;
-
     @Autowired
-    public AdminController(UserService userService, RoleService roleService, BCryptPasswordEncoder passwordEncoder) {
+    public AdminController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
-        this.passwordEncoder = passwordEncoder;
     }
 
-    @GetMapping("/allUsers")
-    public String getAllUsers(Model model) {
+    @GetMapping()
+    public String adminHome(Principal principal, Model model) {
+        User user = userService.findByUsername(principal.getName());
+        model.addAttribute("admin", userService.showUser(user.getId()));
         model.addAttribute("listOfUsers", userService.getAllUsers());
-        return "allUsers";
+        model.addAttribute("personalRole", user.getRolesString());
+        model.addAttribute("roles", roleService.getAllRoles());
+        return "adminHome";
     }
 
-    @GetMapping(value = "create")
-    public String addUser(Model model) {
+    @GetMapping("/personalPage")
+    public String adminNewUser(Principal principal, Model model) {
+        User user = userService.findByUsername(principal.getName());
+        model.addAttribute("admin", userService.showUser(user.getId()));
+        model.addAttribute("role", user.getRolesString());
+        return "adminNewUser";
+    }
+
+    @GetMapping("/new")
+    public String AdminNewUser(Principal principal, Model model) {
+        User user = userService.findByUsername(principal.getName());
+        model.addAttribute("admin", userService.showUser(user.getId()));
         model.addAttribute("user", new User());
-        return "add";
+        model.addAttribute("personalRole", user.getRolesString());
+        model.addAttribute("roles", roleService.getAllRoles());
+        return "new";
     }
 
-    @PostMapping(value = "add")
-    public String createUser(@ModelAttribute("user") User user,
-                             @RequestParam(required = false) String roleAdmin) {
-        Set<Role> roles = new HashSet<>();
-        roles.add(roleService.findRoleById(2L));
-        if (roleAdmin != null && roleAdmin.equals("ROLE_ADMIN")) {
-            roles.add(roleService.findRoleById(1L));
-        }
-        user.setRoles(roles);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    @PostMapping("/newUser")
+    public String addUser(@ModelAttribute("user") User user) {
         userService.createUser(user);
-
-        return "redirect:/admin/allUsers";
+        return "redirect:/admin";
     }
 
-    @GetMapping(value = "/edit/id")
-    public String editUser(Model model, @RequestParam("id") Long id) {
-        User user = userService.showUser(id);
-        model.addAttribute("user", user);
-        return "edit";
+    @PostMapping("/users/{id}/editUser")
+    public String updateUser(@ModelAttribute("user") User user, @RequestParam("id") Long id) {
+        userService.updateUser(id, user);
+        return "redirect:/admin";
     }
 
-    @PatchMapping(value = "/edit/id")
-    public String userUpdate(@ModelAttribute("user") User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userService.createUser(user);
-        return "redirect:/admin/allUsers";
-    }
-
-    @DeleteMapping("id")
-    public String delete(@RequestParam("id") Long id) {
+    @DeleteMapping("/users/id/delete")
+    public String deleteUser(@RequestParam("id") Long id) {
         userService.deleteUser(id);
-        return "redirect:/admin/allUsers";
+        return "redirect:/admin";
     }
 }
