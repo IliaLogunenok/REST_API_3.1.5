@@ -28,25 +28,25 @@ public class AdminController {
         User user = userService.findByUsername(principal.getName());
         model.addAttribute("admin", userService.showUser(user.getId()));
         model.addAttribute("listOfUsers", userService.getAllUsers());
-        model.addAttribute("personalRole", user.getRolesString());
+        model.addAttribute("personalRole", user.convertSetOfRoleToString(userService.showUser(user.getId()).getRoles()));
         model.addAttribute("roles", roleService.getAllRoles());
         return "adminHome";
     }
 
     @GetMapping("/personalPage")
-    public String adminNewUser(Principal principal, Model model) {
+    public String adminPersonalPage(Principal principal, Model model) {
         User user = userService.findByUsername(principal.getName());
         model.addAttribute("admin", userService.showUser(user.getId()));
-        model.addAttribute("role", user.getRolesString());
+        model.addAttribute("role", user.convertSetOfRoleToString(userService.showUser(user.getId()).getRoles()));
         return "adminNewUser";
     }
 
     @GetMapping("/new")
-    public String AdminNewUser(Principal principal, Model model) {
+    public String adminNewUser(Principal principal, Model model) {
         User user = userService.findByUsername(principal.getName());
         model.addAttribute("admin", userService.showUser(user.getId()));
         model.addAttribute("user", new User());
-        model.addAttribute("personalRole", user.getRolesString());
+        model.addAttribute("personalRole", user.convertSetOfRoleToString(userService.showUser(user.getId()).getRoles()));
         model.addAttribute("roles", roleService.getAllRoles());
         return "new";
     }
@@ -57,7 +57,7 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    @PostMapping("/users/{id}/editUser")
+    @PutMapping("/users/id/editUser")
     public String updateUser(@ModelAttribute("user") User user, @RequestParam("id") Long id) {
         userService.updateUser(id, user);
         return "redirect:/admin";

@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,9 +23,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -35,6 +39,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void createUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
@@ -47,11 +52,12 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void updateUser(Long id, User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         User userToBeUpdate = showUser(id);
         userToBeUpdate.setUsername(user.getUsername());
         userToBeUpdate.setPassword(user.getPassword());
         userToBeUpdate.setEmail(user.getEmail());
-        userToBeUpdate.setRoles(user.getRoles());
+        userToBeUpdate.setRole(user.getRoles());
         userRepository.save(userToBeUpdate);
     }
 
@@ -78,7 +84,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
-        return roles.stream().map(r -> new SimpleGrantedAuthority(r.getName())).collect(Collectors.toList());
+        return roles.stream().map(r -> new SimpleGrantedAuthority(r.getRoleName())).collect(Collectors.toList());
     }
 
 }

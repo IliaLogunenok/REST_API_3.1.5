@@ -88,7 +88,7 @@
                                     <td th:text="${user.getId()}">user</td>
                                     <td th:text="${user.getUsername()}">user</td>
                                     <td th:text="${user.getEmail()}">user</td>
-                                    <td th:text="${user.getRolesString()}">user</td>
+                                    <td th:text="${user.convertSetOfRoleToString(user.getRoles())}">user</td>
 
                                     <!--button for edition-->
 
@@ -115,7 +115,7 @@
                                                             aria-label="close"></button>
                                                 </div>
 
-                                                <form th:method="POST"
+                                                <form th:method="PUT"
                                                       th:action="@{/admin/users/id/editUser(id=${user.id})}"
                                                       th:object="${user}">
                                                     <div class="modal-body col-md text-center">
@@ -162,19 +162,17 @@
 
                                                             <br>
 
-                                                            <div class="form-group"><label
-                                                                    for="editRole">Role</label>
-                                                                <select multiple
-                                                                        class="custom-select w-100"
-                                                                        size="2" id="editRole"
-                                                                        name="role">
-                                                                    <option
-                                                                            th:each="role : ${roles}"
-                                                                            th:text="${role.getName()}"
-                                                                            th:value="${role.name}">
-                                                                    </option>
-                                                                </select>
-                                                            </div>
+                                                            <label><strong> Role </strong></label>
+                                                            <select multiple class="form-control" size="2" name="roles"
+                                                                    required>
+                                                                <option th:each="role: ${roles}"
+                                                                        th:value="${role.getRoleName()}"
+                                                                        th:selected="${user.roles.contains(role)}">
+                                                                    <th:block
+                                                                            th:text="${user.convertSetOfRoleToString(role)}">
+                                                                    </th:block>
+                                                                </option>
+                                                            </select>
                                                             <br>
                                                         </div>
                                                     </div>

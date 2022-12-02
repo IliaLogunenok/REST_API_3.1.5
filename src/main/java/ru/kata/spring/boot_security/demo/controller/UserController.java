@@ -20,6 +20,7 @@ public class UserController {
     public String showUser(Principal principal, Model model) {
         User user = userService.findByUsername(principal.getName());
         model.addAttribute("user", userService.showUser(user.getId()));
+        model.addAttribute("role", user.convertSetOfRoleToString(userService.showUser(user.getId()).getRoles()));
         return "forUser";
     }
 }

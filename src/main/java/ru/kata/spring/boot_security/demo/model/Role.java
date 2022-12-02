@@ -4,6 +4,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "roles")
@@ -11,58 +12,72 @@ public class Role implements GrantedAuthority {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id")
+    private Integer id;
 
-    private String name;
+    @Column(name = "role")
+    private String roleName;
+
+    @Transient
+    @ManyToMany(mappedBy = "roles")
+    private Set<User> users;
 
     public Role() {
     }
 
-    public Role(String name) {
-        this.name = name;
+    public Role(String roleName) {
+        this.roleName = roleName;
     }
 
-    public Role(Long id, String name) {
+    public Role(int id, String roleName) {
         this.id = id;
-        this.name = name;
+        this.roleName = roleName;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public Set<User> getUsers() {
+        return users;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 
     @Override
     public String getAuthority() {
-        return name;
+        return roleName;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String role) {
+        this.roleName = role;
+    }
+
+    @Override
+    public String toString() {
+        return roleName;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
-        Role role = (Role) o;
-
-        if (!Objects.equals(id, role.id)) return false;
-        return Objects.equals(name, role.name);
+        Role role1 = (Role) o;
+        return Objects.equals(id, role1.id) && Objects.equals(roleName, role1.roleName) && Objects.equals(users, role1.users);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        return result;
+        return Objects.hash(id, roleName, users);
     }
 }
