@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en" class="h-100" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <title>User Page</title>
@@ -13,10 +15,11 @@
     <div class="container-fluid">
 
         <div class="navbar-header text-white">
-            <ul class="list-inline">
-                <li class="list-inline-item"><h4 th:text="${user.getUsername()}"></h4></li>
-                <li class="list-inline-item"><h4 class="lead" th:text="' with roles: ' + ${role}"></h4></li>
-            </ul>
+            <span>
+                <span class="navbar-brand font-weight-bold" th:text="${user.getUsername()}"></span>
+                <span class="navbar-brand"
+                      th:text="'with roles: ' + ${user.getRoles()}"></span>
+            </span>
         </div>
 
         <div>
@@ -37,6 +40,12 @@
                 <div class="btn-group-vertical justify-content">
                     <a class="btn btn-primary btn-md" href="/user"
                        role="button">User</a>
+                </div>
+                <div sec:authorize="hasRole('ROLE_USER')">
+                    <li class="active">
+                        <a class="btn btn-primary btn-md" href="/user"
+                           role="button">User</a>
+                    </li>
                 </div>
             </div>
         </div>

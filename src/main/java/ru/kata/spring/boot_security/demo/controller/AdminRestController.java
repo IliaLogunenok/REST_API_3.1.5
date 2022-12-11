@@ -22,36 +22,34 @@ public class AdminRestController {
     @GetMapping("/personalPage")
     public ResponseEntity<User> showAdminPersonalPage(Principal principal) {
         User user = userService.findByUsername(principal.getName());
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return ResponseEntity.ok().body(user);
     }
 
     @GetMapping("/generalPage")
     public ResponseEntity<List<User>> showAdminGeneralPage() {
-        List<User> listOfUsers = userService.getAllUsers();
-        return new ResponseEntity<>(listOfUsers, HttpStatus.OK);
+        return ResponseEntity.ok().body(userService.getAllUsers());
     }
 
     @GetMapping("/users/{id}")
     public ResponseEntity<User> showUser(@PathVariable("id") Long id) {
-        User user = userService.showUser(id);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return ResponseEntity.ok().body(userService.showUser(id));
     }
 
     @PostMapping("/new")
-    public ResponseEntity<HttpStatus> addUser(@RequestBody User user) {
+    public ResponseEntity<User> addUser(@RequestBody User user) {
         userService.createUser(user);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().body(user);
     }
 
     @PutMapping("/users/{id}")
     public ResponseEntity<HttpStatus> editUser(@RequestBody User user, @PathVariable("id") Long id) {
         userService.updateUser(id, user);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @DeleteMapping("/users/{id}")
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable("id") Long id) {
         userService.deleteUser(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 }

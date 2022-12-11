@@ -42,32 +42,5 @@ public class AdminController {
                 user.convertSetOfRoleToString(userService.showUser(user.getId()).getRoles()));
         return "adminNewUser";
     }
-//
-//    @GetMapping("/new")
-//    public String adminNewUser(Principal principal, Model model) {
-//        User user = userService.findByUsername(principal.getName());
-//        model.addAttribute("admin", userService.showUser(user.getId()));
-//        model.addAttribute("user", new User());
-//        model.addAttribute("personalRole", user.convertSetOfRoleToString(userService.showUser(user.getId()).getRoles()));
-//        model.addAttribute("roles", roleService.getAllRoles());
-//        return "new";
-//    }
-//
-//    @PostMapping("/newUser")
-//    public String addUser(@ModelAttribute("user") User user) {
-//        userService.createUser(user);
-//        return "redirect:/admin";
-//    }
-//
-//    @PutMapping("/users/id/editUser")
-//    public String updateUser(@ModelAttribute("user") User user, @RequestParam("id") Long id) {
-//        userService.updateUser(id, user);
-//        return "redirect:/admin";
-//    }
-//
-//    @DeleteMapping("/users/id/delete")
-//    public String deleteUser(@RequestParam("id") Long id) {
-//        userService.deleteUser(id);
-//        return "redirect:/admin";
-//    }
+
 }
