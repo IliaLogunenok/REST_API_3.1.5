@@ -37,12 +37,13 @@
         <div class="col-2" style="background-color: #ffffff">
             <div class="row justify-content">
                 <div sec:authorize="hasRole('ROLE_ADMIN')">
-                    <li class="active">
-                        <a class="nav-link" href="/admin">Admin</a>
-                    </li>
+                    <a class="btn btn-primary btn-md" href="/admin" style="width: 100%"
+                       role="button">Admin</a>
                 </div>
-                    <a class="btn btn-primary btn-md" href="/user"
+                <div>
+                    <a class="btn btn-primary btn-md" href="/user" style="width: 100%"
                        role="button">User</a>
+                </div>
             </div>
         </div>
 
