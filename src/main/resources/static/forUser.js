@@ -1,5 +1,5 @@
 async function getUserPage () {
-    let page = await fetch('http://localhost:8080/user/')
+    let page = await fetch('/api/admin/userPage')
 
     if (page.ok) {
         let user = await page.json();

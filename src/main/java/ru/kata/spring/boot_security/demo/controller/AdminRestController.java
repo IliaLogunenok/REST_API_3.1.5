@@ -52,4 +52,10 @@ public class AdminRestController {
         userService.deleteUser(id);
         return ResponseEntity.ok(HttpStatus.OK);
     }
+
+    @GetMapping("/userPage")
+    public ResponseEntity<User> showUser(Principal principal) {
+        User user = userService.findByUsername(principal.getName());
+        return ResponseEntity.ok().body(user);
+    }
 }
